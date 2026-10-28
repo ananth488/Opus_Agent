@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OPUS Assistant - Live AI Chat Widget</title>
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-gradient: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #4338ca 100%);
+      --header-gradient: linear-gradient(135deg, #07111e 0%, #0c2340 50%, #05162a 100%);
+      --bg-dark: #0b192c;
+      --surface: #ffffff;
+      --surface-subtle: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --shadow-xl: 0 25px 60px -15px rgba(0, 0, 0, 0.3), 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: #f1f5f9;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .demo-page {
+      max-width: 600px;
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    .demo-page h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin-top: 16px;
+      margin-bottom: 12px;
+      color: var(--bg-dark);
+    }
+    .demo-page p {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #eff6ff;
+      color: var(--primary-color);
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid #bfdbfe;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    /* Floating Launcher Button - Solid & Highly Visible */
+    .opus-widget-launcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      height: 56px;
+      padding: 0 20px 0 16px;
+      border-radius: 9999px;
+      background: #1d4ed8;
+      background-image: var(--primary-gradient);
+      box-shadow: 0 10px 30px -3px rgba(37, 99, 235, 0.6), 0 4px 12px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+      z-index: 99999;
+      font-family: inherit;
+    }
+
+    .opus-widget-launcher:hover {
+      transform: scale(1.05);
+      box-shadow: 0 14px 34px -4px rgba(37, 99, 235, 0.7);
+    }
+
+    .opus-widget-launcher:focus-visible {
+      outline: 3px solid #2563eb;
+      outline-offset: 4px;
+    }
+
+    .launcher-icon-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .launcher-beacon {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      background-color: #10b981;
+      border-radius: 50%;
+      border: 2px solid #1e40af;
+    }
+
+    .launcher-text {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    /* Widget Modal Window */
+    .opus-widget-window {
+      position: fixed;
+      bottom: 96px;
+      right: 24px;
+      width: 420px;
+      max-width: calc(100vw - 32px);
+      height: 640px;
+      max-height: calc(100vh - 120px);
+      background: var(--surface);
+      border-radius: 28px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      overscroll-behavior: contain;
+      z-index: 99998;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px) scale(0.96);
+      transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .opus-widget-window.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Widget Header */
+    .opus-header {
+      background: var(--bg-dark);
+      background-image: var(--header-gradient);
+      color: white;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .opus-header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .opus-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(37, 99, 235, 0.25);
+      border: 1px solid rgba(96, 165, 250, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #93c5fd;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .opus-header-info h2 {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ai-pill {
+      font-size: 10px;
+      font-weight: 800;
+      background: rgba(59, 130, 246, 0.25);
+      color: #93c5fd;
+      border: 1px solid rgba(96, 165, 250, 0.35);
+      padding: 2px 6px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .opus-header-info p {
+      font-size: 11px;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    .header-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 6px #10b981;
+    }
+
+    .opus-close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #cbd5e1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .opus-close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    .opus-close-btn:focus-visible {
+      outline: 2px solid white;
+    }
+
+    /* Messages Container */
+    .opus-messages {
+      flex: 1;
+      padding: 18px 16px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background: var(--surface-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .msg-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      max-width: 88%;
+    }
+
+    .msg-row.user-row {
+      align-self: flex-end;
+      max-width: 84%;
+    }
+
+    .assistant-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-dark);
+      color: #93c5fd;
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .message {
+      padding: 13px 16px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .message.assistant {
+      background: white;
+      color: var(--text-main);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-top-left-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .message.user {
+      background: #2563eb;
+      background-image: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+      color: white;
+      border-top-right-radius: 4px;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Quick Reply Chips */
+    .opus-chips {
+      padding: 10px 14px;
+      background: #f1f5f9;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      border-top: 1px solid var(--border-color);
+      scrollbar-width: none;
+    }
+    .opus-chips::-webkit-scrollbar { display: none; }
+
+    .chip-btn {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 9999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: #334155;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .chip-btn:hover {
+      background: #eff6ff;
+      border-color: #60a5fa;
+      color: #1d4ed8;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Typing Indicator */
+    .typing-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      align-self: flex-start;
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 12px 18px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      border-top-left-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #3b82f6;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* Input Footer */
+    .opus-footer-wrap {
+      padding: 14px 16px 10px;
+      background: white;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .opus-input-area {
+      display: flex;
+      align-items: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      background: #f8fafc;
+      padding: 4px 6px 4px 14px;
+      transition: all 0.2s;
+    }
+
+    .opus-input-area:focus-within {
+      border-color: #2563eb;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .opus-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 8px 0;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+      color: var(--text-main);
+    }
+
+    .opus-send-btn {
+      background: #2563eb;
+      background-image: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+    }
+
+    .opus-send-btn:hover {
+      opacity: 0.9;
+    }
+
+    .opus-send-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .watermark {
+      text-align: center;
+      font-size: 10px;
+      color: #94a3b8;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    /* Mobile Friendly Layout */
+    @media (max-width: 480px) {
+      .opus-widget-window {
+        bottom: 0;
+        right: 0;
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        border-radius: 0;
+      }
+      .opus-widget-launcher {
+        padding: 0 16px;
+      }
+      .launcher-text {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-page">
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      OPUS Assistant Ready
+    </div>
+    <h1>OPUS Infiniti AI Assistant</h1>
+    <p>
+      Enterprise sales and lead-qualification agent for OPUS Infiniti (opusinfiniti.com). Click the floating launcher button at the bottom right corner to start.
+    </p>
+  </div>
+
+  <!-- Launcher Button -->
+  <button class="opus-widget-launcher" id="opusLauncher" aria-label="Open OPUS Assistant Chat" title="Chat with OPUS Assistant">
+    <div class="launcher-icon-wrap">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span class="launcher-beacon"></span>
+    </div>
+    <span class="launcher-text">Chat with AI</span>
+  </button>
+
+  <!-- Chat Window -->
+  <div class="opus-widget-window" id="opusWindow" role="dialog" aria-modal="true" aria-labelledby="chatTitle">
+    <div class="opus-header">
+      <div class="opus-header-brand">
+        <div class="opus-avatar">O</div>
+        <div class="opus-header-info">
+          <h2 id="chatTitle">OPUS Assistant <span class="ai-pill">AI</span></h2>
+          <p><span class="header-dot"></span> Active Now • Enterprise AI</p>
+        </div>
+      </div>
+      <button class="opus-close-btn" id="opusCloseBtn" aria-label="Close Chat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div class="opus-messages" id="opusMessages">
+      <div class="msg-row">
+        <div class="assistant-icon">O</div>
+        <div class="message assistant">
+          Hi, I'm OPUS Assistant. Tell me about your business and what you want to solve, and I'll help you find the right solution.
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Reply Chips -->
+    <div class="opus-chips" id="opusChips">
+      <button class="chip-btn" data-text="What does your company do?">🏢 Company Overview</button>
+      <button class="chip-btn" data-text="We run an international school and need attendance and bus tracking">🏫 School ERP</button>
+      <button class="chip-btn" data-text="I need to move data from Oracle to Snowflake">🔄 Oracle to Snowflake</button>
+      <button class="chip-btn" data-text="I'd like to schedule a demo">📅 Schedule Demo</button>
+      <button class="chip-btn" data-text="I want to talk to a person">👤 Talk to Human</button>
+    </div>
+
+    <!-- Input Footer -->
+    <div class="opus-footer-wrap">
+      <form class="opus-input-area" id="opusForm">
+        <input
+          type="text"
+          class="opus-input"
+          id="opusInput"
+          placeholder="Ask about ERP, ETL, demo or requirements..."
+          autocomplete="off"
+          required
+        />
+        <button type="submit" class="opus-send-btn" id="opusSendBtn" aria-label="Send Message">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+      <div class="watermark">⚡ Powered by OPUS Infiniti Enterprise Intelligence</div>
+    </div>
+  </div>
+
+  <script>
+    const launcher = document.getElementById("opusLauncher");
+    const windowEl = document.getElementById("opusWindow");
+    const closeBtn = document.getElementById("opusCloseBtn");
+    const messagesEl = document.getElementById("opusMessages");
+    const formEl = document.getElementById("opusForm");
+    const inputEl = document.getElementById("opusInput");
+    const chipsEl = document.getElementById("opusChips");
+
+    let sessionId = "session-" + Math.random().toString(36).substring(2, 9);
+    const API_URL = "http://localhost:8000/chat";
+
+    launcher.addEventListener("click", () => {
+      windowEl.classList.toggle("active");
+      if (windowEl.classList.contains("active")) {
+        inputEl.focus();
+      }
+    });
+
+    closeBtn.addEventListener("click", () => {
+      windowEl.classList.remove("active");
+      launcher.focus();
+    });
+
+    function appendMessage(role, text) {
+      if (role === "assistant") {
+        const row = document.createElement("div");
+        row.className = "msg-row";
+        row.innerHTML = `<div class="assistant-icon">O</div><div class="message assistant">${text}</div>`;
+        messagesEl.appendChild(row);
+      } else {
+        const row = document.createElement("div");
+        row.className = "msg-row user-row";
+        row.innerHTML = `<div class="message user">${text}</div>`;
+        messagesEl.appendChild(row);
+      }
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function showTyping() {
+      const row = document.createElement("div");
+      row.className = "typing-row";
+      row.id = "typingIndicator";
+      row.innerHTML = `<div class="assistant-icon">O</div><div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+      messagesEl.appendChild(row);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function hideTyping() {
+      const indicator = document.getElementById("typingIndicator");
+      if (indicator) indicator.remove();
+    }
+
+    async function sendMessage(text) {
+      if (!text.trim()) return;
+      appendMessage("user", text);
+      inputEl.value = "";
+      showTyping();
+
+      try {
+        const resp = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session_id: sessionId, message: text })
+        });
+        hideTyping();
+
+        if (resp.ok) {
+          const data = await resp.json();
+          appendMessage("assistant", data.reply);
+          if (data.session_id) sessionId = data.session_id;
+        } else {
+          appendMessage("assistant", "I am currently connecting to the OPUS server. For immediate assistance, feel free to contact reachus@opusinfiniti.com or call +91 97909 65960.");
+        }
+      } catch (err) {
+        hideTyping();
+        if (text.toLowerCase().includes("school")) {
+          appendMessage("assistant", "For schools and academic institutions, I recommend **emsPLUS-Premium**! It includes student lifecycle management, biometric attendance, and real-time GPS bus tracking for parent peace of mind. Would you like a demo?");
+        } else if (text.toLowerCase().includes("oracle") || text.toLowerCase().includes("snowflake")) {
+          appendMessage("assistant", "We recommend **OPUS Data Migration (ETL tool)**. It features pre-built high-throughput connectors for Oracle and Snowflake, automated schema conversion, and zero-loss cutover.");
+        } else {
+          appendMessage("assistant", "OPUS Infiniti specializes in AI/ML, ERP, HRMS, and enterprise platforms with 50+ experts across 10+ countries. How can our team support your business goals?");
+        }
+      }
+    }
+
+    formEl.addEventListener("submit", (e) => {
+      e.preventDefault();
+      sendMessage(inputEl.value);
+    });
+
+    chipsEl.addEventListener("click", (e) => {
+      const btn = e.target.closest(".chip-btn");
+      if (btn) {
+        const text = btn.getAttribute("data-text");
+        sendMessage(text);
+      }
+    });
+  </script>
+</body>
+</html>

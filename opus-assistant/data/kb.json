@@ -1,0 +1,75 @@
+[
+  {
+    "id": "company-overview",
+    "title": "About OPUS Infiniti - Company Overview",
+    "source_url": "https://opusinfiniti.com/about",
+    "text": "OPUS Infiniti is a global enterprise software development company based in Chennai, India. The company has 50+ trained software experts, 20+ SaaS products, 100+ completed projects, 24+ mobile apps, and serves clients across 12 distinct industries in 10+ countries. OPUS specialises in ERP, HRMS, AI/ML (Machine Learning), Natural Language Processing (NLP), RPA (Robotic Process Automation), and IoT sensor solutions. The registered headquarters is located at #259, No: G-1, Door No 4/608, V.O.C Street, Kottivakkam, Perungudi, OMR, Chennai 600 041, India. Email: reachus@opusinfiniti.com. Phone: +91 97909 65960."
+  },
+  {
+    "id": "offices-and-global-presence",
+    "title": "Global Offices and International Presence",
+    "source_url": "https://opusinfiniti.com/contact",
+    "text": "OPUS Infiniti maintains offices and strategic partners worldwide. Headquarters: Chennai, India (Phone: +91 97909 65960, Email: reachus@opusinfiniti.com). North America Branch: 405 State Highway 121 Bypass, Suite #250, Lewisville, TX 75067, USA (Phone: +1 972 827-7766). Malaysia Office: OPUS Infiniti Services Sdn. Bhd. (1341174-U), Millennium Square, 98 Jalan 14/1, Seksyen 14, 46100 Petaling Jaya, Selangor, Malaysia (Phone: +60 17 788 1710, Email: anoop@opusinfiniti.com). Strategic partner network locations include Saudi Arabia (Riyadh), Ghana (Accra), Philippines (Manila), Brunei (Bandar Seri Begawan), Indonesia (Jakarta), and the United Kingdom (London)."
+  },
+  {
+    "id": "technology-stack",
+    "title": "Technology Stack & Architecture",
+    "source_url": "https://opusinfiniti.com/#tech",
+    "text": "OPUS Infiniti engineers enterprise platforms using cutting-edge technologies. Backend: Microsoft .NET Core stack, Python (Django, FastAPI), Node.js, and Java Spring. Frontend: Next.js, React, Angular, and TypeScript. Databases: PostgreSQL, MongoDB, Oracle Database, and Microsoft SQL Server. Cloud & DevOps: AWS, Microsoft Azure, Google Cloud Platform (GCP), Docker containers, and Kubernetes orchestration. Analytics & Business Intelligence: Power BI, Apache Kafka, and custom ML/NLP predictive models."
+  },
+  {
+    "id": "product-opusdata-etl",
+    "title": "OPUS Data Migration (ETL Tool)",
+    "source_url": "https://opusinfiniti.com/products/opusdata-etl",
+    "text": "OPUS Data Migration (ETL) is a flagship enterprise data migration and pipeline tool designed for high-volume database transitions. It features pre-built, robust native connectors for Oracle, Snowflake, Microsoft SQL Server, PostgreSQL, MySQL, and cloud data warehouses. It provides automated schema conversion, real-time data validation, zero-downtime cutover synchronization, error isolation, and 100% data integrity audits. Ideal for enterprises migrating legacy on-premise databases to cloud data warehouses."
+  },
+  {
+    "id": "product-reliance-pms",
+    "title": "OPUS Portfolio Management System (Reliance PMS)",
+    "source_url": "https://opusinfiniti.com/products/reliance-pms",
+    "text": "Reliance PMS (OPUS Portfolio Management System) is an enterprise-grade investment and treasury management platform. It manages portfolios across fixed deposits, government and corporate bonds, equities, mutual funds, and structured financial instruments. Key features include real-time valuation, automated dividend and interest accrual tracking, capital gains calculation, statutory compliance, risk exposure analysis, and yield optimization reporting for asset management firms and family offices."
+  },
+  {
+    "id": "product-emsplus-premium",
+    "title": "emsPLUS-Premium - International School Management",
+    "source_url": "https://opusinfiniti.com/products/emsplus-premium",
+    "text": "emsPLUS-Premium is an all-in-one school and college management ERP tailored for international schools, private institutions, and educational chains. Capabilities include student admission lifecycle, biometric & facial attendance, dynamic timetable generation, comprehensive grading & report card publishing, parent mobile portal, fee billing with online payment gateways, library automation, and real-time GPS school bus tracking with parent arrival notifications."
+  },
+  {
+    "id": "product-manufacturing-erp",
+    "title": "OPUS Manufacturing ERP",
+    "source_url": "https://opusinfiniti.com/domain#extended-enterprise",
+    "text": "OPUS Manufacturing ERP is engineered for discrete and process manufacturing facilities. It features ML-powered predictive maintenance with 94% accuracy, reducing unplanned factory downtime from 40% to 12%. Modules include Bill of Materials (BOM), shop floor work-order routing, inventory & raw materials traceability, computerized machine maintenance management (CMMS), and automated quality inspection using computer vision and NLP inspection logs."
+  },
+  {
+    "id": "product-supply-chain",
+    "title": "OPUS Supply Chain & Logistics Intelligence",
+    "source_url": "https://opusinfiniti.com/domain#extended-enterprise",
+    "text": "OPUS Supply Chain is an integrated logistics optimization platform handling route planning, fleet tracking, and warehouse fulfillment. Using machine learning route optimization algorithms (92% accuracy), it cuts average delivery times from 4.2 hours to 2.7 hours and saves up to 25% on fleet fuel consumption. Includes multi-carrier API integration, dynamic shipment tracking, driver dispatch mobile apps, and warehouse inventory cross-docking."
+  },
+  {
+    "id": "product-health-erp",
+    "title": "OPUS Health ERP & Hospital Management",
+    "source_url": "https://opusinfiniti.com/domain#enterprise",
+    "text": "OPUS Health ERP transforms hospitals, multi-specialty clinics, and medical tourism providers. Features include outpatient/inpatient electronic medical records (EMR), patient-specialist AI matching (94% accuracy), digital surgery scheduling, pharmacy inventory, lab test reporting, insurance claims processing, and multi-language patient translation for international medical tourists."
+  },
+  {
+    "id": "product-hrms-suite",
+    "title": "OPUS HRMS & Country-Specific Statutory Payroll",
+    "source_url": "https://opusinfiniti.com/domain#hrms",
+    "text": "OPUS HRMS is a global human capital management system featuring deep statutory payroll compliance engines tailored by country. Includes full automated calculations for Malaysia (PCB, EPF, SOCSO, EIS), Singapore (CPF, IRAS), and African enterprise payroll regulations. Features self-service employee portal, leave management, biometric attendance sync, expense reimbursement, and performance appraisal workflows."
+  },
+  {
+    "id": "case-studies-summary",
+    "title": "Case Studies & Measurable Business Impact",
+    "source_url": "https://opusinfiniti.com/case-studies",
+    "text": "OPUS Infiniti has delivered 100+ implementations with an average 290% first-year ROI across 13 major case studies. Key examples reported by the company: 1) Kualities Manufacturing: reduced unplanned machine downtime from 40% to 12% saving $2.1M annually. 2) Cargo Management Logistics: cut delivery times by 35% saving $1.2M in fuel costs. 3) Medical Tourism Hospital: improved patient treatment success from 82% to 91% and boosted satisfaction by 58%. All figures are past results reported by OPUS Infiniti."
+  },
+  {
+    "id": "pricing-and-commercials",
+    "title": "Pricing, Implementation, and Contracts",
+    "source_url": "https://opusinfiniti.com/faq",
+    "text": "OPUS Infiniti offers flexible commercial models: SaaS subscription (cloud-hosted), on-premise perpetual license with annual maintenance, and hybrid deployment. Implementation timelines range from 3 to 6 months depending on enterprise complexity. Official quotes, custom discount structures, and contract terms are provided exclusively by the OPUS Infiniti sales leadership team following a scoping discovery call."
+  }
+]
+
